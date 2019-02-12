@@ -3,6 +3,9 @@
     <div class="content-container" >
       <div v-if="currentQuestion">
         <p class="question-letter">{{currentQuestion.question.jp}}</p>
+        <transition name="fade-appear">
+          <p class="question-letter-ru" v-if="isAnswered">{{currentQuestion.question.ru}}</p>
+        </transition>
         <ul class="question-variants">
           <li v-for="k in currentQuestion.variants" class="variants-list-el">
             <span
@@ -39,6 +42,8 @@ export default {
       isAnswerFalse: false,
       answer: null,
       currentQuestionIndex: 1,
+      correctAnswers: 0,
+      isTestOver: false,
       generateQuestionsAction: (a) => {
         this.questions = generateQuestions(a);
         this.currentQuestion = this.questions[0];
@@ -51,6 +56,7 @@ export default {
         this.isAnswered = true;
         if (this.currentQuestion.question.ru === answer.ru) {
           this.isAnswerCorrect = true;
+          this.correctAnswers = this.correctAnswers + 1;
         } else {
           this.isAnswerFalse = true;
         }
@@ -69,6 +75,13 @@ export default {
 </script>
 
 <style>
+.fade-appear-enter-active {
+  transition: all .5s ease;
+}
+.fade-appear-enter, .fade-appear-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
 body {
   margin: 0px;
   padding: 0px;
@@ -110,8 +123,12 @@ p {
   margin-top: 20px;
 }
 .question-letter {
-  font-size: 25px;
+  font-size: 29px;
   font-weight: 600;
+}
+.question-letter-ru {
+  font-size: 25px;
+  font-weight: 300;
 }
 .variant {
   padding: 5px;
